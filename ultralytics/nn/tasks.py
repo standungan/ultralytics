@@ -38,6 +38,7 @@ from ultralytics.nn.modules import (
     C3x,
     CBFuse,
     CBLinear,
+    CBAM,
     Classify,
     Concat,
     Conv,
