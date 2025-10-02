@@ -1,0 +1,54 @@
+# yolo11n_bifpn.yaml
+# Nano-scale YOLO11 with BiFPN-style PAN (concat + 1x1 fusion)
+
+nc: 3
+depth_multiple: 0.33
+width_multiple: 0.25
+
+backbone:
+  - [-1, 1, Conv, [64, 3, 2]]            # 0 P1/2
+  - [-1, 1, Conv, [128, 3, 2]]           # 1 P2/4
+  - [-1, 3, C2f,  [128, True]]           # 2
+  - [-1, 1, Conv, [256, 3, 2]]           # 3 P3/8
+  - [-1, 6, C2f,  [256, True]]           # 4
+  - [-1, 1, Conv, [512, 3, 2]]           # 5 P4/16
+  - [-1, 6, C2f,  [512, True]]           # 6
+  - [-1, 1, Conv, [768, 3, 2]]           # 7 P5/32
+  - [-1, 2, C2f,  [768, True]]           # 8
+  - [-1, 1, SPPF, [768, 5]]              # 9 P5
+
+head:
+  - [9,        1, Conv,        [512, 1, 1]]           # 10 P5r  # Top-down
+  - [-1,       1, nn.Upsample, [None, 2, 'nearest']]  # 11
+  - [[-1, 6],  1, Concat,      [1]]                   # 12 P4 cat
+  - [-1,       2, C2f,         [512]]                 # 13 P4td
+  - [-1,       1, Conv,        [256, 1, 1]]           # 14
+  - [-1,       1, nn.Upsample, [None, 2, 'nearest']]  # 15
+  - [[-1, 4],  1, Concat,      [1]]                   # 16 P3 cat
+  - [-1,       2, C2f,         [256]]                 # 17 P3td
+
+  - [-1,       1, Conv,        [256, 3, 2]]           # 18 -> P4   # Bottom-up (stage 1)
+  - [[-1, 13], 1, Concat,      [1]]                   # 19 fuse P4
+  - [-1,       2, C2f,         [512]]                 # 20 P4bu
+
+  - [-1,       1, Conv,        [512, 3, 2]]           # 21 -> P5
+  - [[-1, 10], 1, Concat,      [1]]                   # 22 fuse P5
+  - [-1,       2, C2f,         [768]]                 # 23 P5bu
+
+  - [23,       1, Conv,        [512, 1, 1]]           # 24 # Top-down (stage 2) — extra mixing
+  - [-1,       1, nn.Upsample, [None, 2, 'nearest']]  # 25
+  - [[-1, 20], 1, Concat,      [1]]                   # 26 mix P4
+  - [-1,       1, Conv,        [512, 1, 1]]           # 27 compress
+  - [-1,       1, Conv,        [512, 3, 1]]           # 28 refine
+
+  - [28,       1, Conv,        [256, 1, 1]]           # 29
+  - [-1,       1, nn.Upsample, [None, 2, 'nearest']]  # 30
+  - [[-1, 17], 1, Concat,      [1]]                   # 31 mix P3
+  - [-1,       1, Conv,        [256, 1, 1]]           # 32 compress
+  - [-1,       1, Conv,        [256, 3, 1]]           # 33 refine
+
+  - [33,       1, nn.Identity, []]                    # 34 P3*
+  - [28,       1, nn.Identity, []]                    # 35 P4*
+  - [23,       1, nn.Identity, []]                    # 36 P5*
+
+  - [[34,35,36], 1, Detect,    [nc]]                  # ✅ pass nc explicitly
