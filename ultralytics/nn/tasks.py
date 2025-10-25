@@ -1667,12 +1667,11 @@ def parse_model(d, ch, verbose=True):
             c2 = sum(ch[x] for x in f)
         elif m is BiFPN_Concat:
             c2 = max(ch[x] for x in f)
-        elif m in {BiFPN, BiFPN_Transformer}:
-            length = len([ch[x] for x in f])
-            args = [length]
-        elif m in frozenset(
-            {Detect, WorldDetect, YOLOEDetect, Segment, YOLOESegment, Pose, OBB, ImagePoolingAttn, v10Detect}
-        ):
+        elif m in frozenset({BiFPN, BiFPN_Transformer}):
+            c2 = max(ch[x] for x in f)
+            # length = len([ch[x] for x in f])
+            # args = [length]
+        elif m in frozenset({Detect, WorldDetect, YOLOEDetect, Segment, YOLOESegment, Pose, OBB, ImagePoolingAttn, v10Detect}):
             args.append([ch[x] for x in f])
             if m is Segment or m is YOLOESegment:
                 args[2] = make_divisible(min(args[2], max_channels) * width, 8)
