@@ -74,6 +74,8 @@ from .conv import (
     Index,
     LightConv,
     RepConv,
+    BiFPN_Concat2, 
+    BiFPN_Concat3,
     SpatialAttention,
 )
 from .head import (
@@ -117,6 +119,8 @@ __all__ = (
     "SpatialAttention",
     "CBAM",
     "Concat",
+    "BiFPN_Concat2",
+    "BiFPN_Concat3",
     "TransformerLayer",
     "TransformerBlock",
     "MLPBlock",

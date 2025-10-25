@@ -22,6 +22,8 @@ __all__ = (
     "SpatialAttention",
     "CBAM",
     "Concat",
+    'BiFPN_Concat3',
+    'BiFPN_Concat2',
     "RepConv",
     "Index",
 )
@@ -682,6 +684,41 @@ class Concat(nn.Module):
         """
         return torch.cat(x, self.d)
 
+class BiFPN_Concat2(nn.Module):
+    def __init__(self, dimension=1):
+        super(BiFPN_Concat2, self).__init__()
+        self.d = dimension
+        self.w = nn.Parameter(torch.ones(2, dtype=torch.float32), requires_grad=True)
+        self.epsilon = 0.0001
+
+    def forward(self, x):
+        w = self.w
+        weight = w / (torch.sum(w, dim=0) + self.epsilon)  # 将权重进行归一化
+        # Fast normalized fusion
+        x = [weight[0] * x[0], weight[1] * x[1]]
+        return torch.cat(x, self.d)
+    
+class BiFPN_Concat3(nn.Module):
+    def __init__(self, dimension=1):
+        super(BiFPN_Concat3, self).__init__()
+        self.d = dimension
+        self.w = nn.Parameter(torch.ones(3, dtype=torch.float32), requires_grad=True)
+        self.epsilon = 0.0001
+
+    def forward(self, x):
+        w = self.w
+        weight = w / (torch.sum(w, dim=0) + self.epsilon) 
+        # Fast normalized fusion
+        x = [weight[0] * x[0], weight[1] * x[1], weight[2] * x[2]]
+        return torch.cat(x, self.d)
+
+    def autopad(k, p=None, d=1):  # kernel, padding, dilation
+        """Pad to 'same' shape outputs."""
+        if d > 1:
+            k = d * (k - 1) + 1 if isinstance(k, int) else [d * (x - 1) + 1 for x in k]  # actual kernel-size
+        if p is None:
+            p = k // 2 if isinstance(k, int) else [x // 2 for x in k]  # auto-pad
+        return p
 
 class Index(nn.Module):
     """
