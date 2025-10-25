@@ -10,7 +10,9 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 
+from ultralytics.nn.modules import (BiFPN_Concat, BiFPN, BiFPN_Transformer)
 from ultralytics.nn.autobackend import check_class_names
+
 from ultralytics.nn.modules import (
     AIFI,
     C1,
@@ -94,7 +96,6 @@ from ultralytics.utils.torch_utils import (
     time_sync,
 )
 
-from ultralytics.nn.modules import (BiFPN_Concat, BiFPN, BiFPN_Transformer)
 
 class BaseModel(torch.nn.Module):
     """
@@ -1665,6 +1666,11 @@ def parse_model(d, ch, verbose=True):
             args = [ch[f]]
         elif m is Concat:
             c2 = sum(ch[x] for x in f)
+        elif m is BiFPN_Concat:
+            c2 = max(ch[x] for x in f)
+        elif m in {BiFPN, BiFPN_Transformer}:
+            length = len([ch[x] for x in f])
+            args = [length]
         elif m in frozenset(
             {Detect, WorldDetect, YOLOEDetect, Segment, YOLOESegment, Pose, OBB, ImagePoolingAttn, v10Detect}
         ):
