@@ -22,8 +22,8 @@ __all__ = (
     "SpatialAttention",
     "CBAM",
     "Concat",
-    'BiFPN_Concat3',
-    'BiFPN_Concat2',
+    "BiFPN_Concat3",
+    "BiFPN_Concat2",
     "RepConv",
     "Index",
 )

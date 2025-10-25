@@ -64,6 +64,8 @@ from .conv import (
     CBAM,
     ChannelAttention,
     Concat,
+    BiFPN_Concat2,
+    BiFPN_Concat3,
     Conv,
     Conv2,
     ConvTranspose,
@@ -74,8 +76,6 @@ from .conv import (
     Index,
     LightConv,
     RepConv,
-    BiFPN_Concat2, 
-    BiFPN_Concat3,
     SpatialAttention,
 )
 from .head import (
