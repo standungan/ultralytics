@@ -9,7 +9,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-
+from ultralytics.nn.modules.conv import BiFPN_Concat2, BiFPN_Concat3
 from ultralytics.nn.autobackend import check_class_names
 from ultralytics.nn.modules import (
     AIFI,
