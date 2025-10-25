@@ -94,6 +94,7 @@ from ultralytics.utils.torch_utils import (
     time_sync,
 )
 
+from ultralytics.nn.modules import (BiFPN_Concat, BiFPN, BiFPN_Transformer)
 
 class BaseModel(torch.nn.Module):
     """
