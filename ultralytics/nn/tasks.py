@@ -10,9 +10,7 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 
-from ultralytics.nn.modules import (BiFPN_Concat, BiFPN, BiFPN_Transformer)
 from ultralytics.nn.autobackend import check_class_names
-
 from ultralytics.nn.modules import (
     AIFI,
     C1,
@@ -96,6 +94,7 @@ from ultralytics.utils.torch_utils import (
     time_sync,
 )
 
+from ultralytics.nn.modules import (BiFPN_Concat, BiFPN, BiFPN_Transformer)
 
 class BaseModel(torch.nn.Module):
     """
