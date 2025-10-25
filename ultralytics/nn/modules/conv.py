@@ -23,7 +23,7 @@ __all__ = (
     "CBAM",
     "Concat",
     "BiFPN_Concat3",
-    "BiFPN_Concat2",
+    "BiFPN_Concat2,
     "RepConv",
     "Index",
 )
