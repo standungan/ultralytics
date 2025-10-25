@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.models.resnet import resnet50
 
-__all__ = ["BiFPN_Concat", "BiFPN"]
+__all__ = ["BiFPN_Concat", "BiFPN", "BiFPN_Transformer"]
 
 
 def autopad(k, p=None, d=1):
