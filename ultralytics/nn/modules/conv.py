@@ -690,10 +690,12 @@ class BiFPN_Concat2(nn.Module):
         self.w = nn.Parameter(torch.ones(2, dtype=torch.float32), requires_grad=True)
         self.epsilon = 0.0001
 
-    def forward(self, x):
+    def forward(self, x):        
         w = self.w
         weight = w / (torch.sum(w, dim=0) + self.epsilon)  # 将权重进行归一化
         # Fast normalized fusion
+        # print(x[0].shape, x[1].shape)
+        # print("-"*30)
         x = [weight[0] * x[0], weight[1] * x[1]]
         return torch.cat(x, self.d)
     

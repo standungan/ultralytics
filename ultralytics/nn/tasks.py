@@ -9,6 +9,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
+from ultralytics.nn.modules.CBAM import myCBAM # import myCBAM module
 from ultralytics.nn.modules.conv import BiFPN_Concat2, BiFPN_Concat3, CBAM
 from ultralytics.nn.autobackend import check_class_names
 from ultralytics.nn.modules import (
@@ -1699,6 +1700,8 @@ def parse_model(d, ch, verbose=True):
             args = [c1, c2, *args[1:]]
         elif m is CBFuse:
             c2 = ch[f[-1]]
+        elif m in {myCBAM}:
+            args = [ch[f], *args]
         elif m in frozenset({TorchVision, Index}):
             c2 = args[0]
             c1 = ch[f]
