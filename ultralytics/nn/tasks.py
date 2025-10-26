@@ -9,7 +9,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
-from ultralytics.nn.modules.conv import BiFPN_Concat2, BiFPN_Concat3
+from ultralytics.nn.modules.conv import BiFPN_Concat2, BiFPN_Concat3, CBAM
 from ultralytics.nn.autobackend import check_class_names
 from ultralytics.nn.modules import (
     AIFI,
@@ -68,7 +68,6 @@ from ultralytics.nn.modules import (
     YOLOEDetect,
     YOLOESegment,
     v10Detect,
-    CBAM,
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, LOGGER, YAML, colorstr, emojis
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -1684,11 +1683,6 @@ def parse_model(d, ch, verbose=True):
             # 添加bifpn_concat结构
         elif m in [BiFPN_Concat2, BiFPN_Concat3]:
             c2 = sum(ch[x] for x in f)
-        elif m is CBAM:
-            c1, c2 = ch[f], args[0]
-            if c2 != nc:
-                c2 = make_divisible(min(c2, max_channels) * width, 8)
-            args = [c1, *args[1:]]
         elif m in frozenset(
             {Detect, WorldDetect, YOLOEDetect, Segment, YOLOESegment, Pose, OBB, ImagePoolingAttn, v10Detect}
         ):

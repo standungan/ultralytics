@@ -617,7 +617,6 @@ class SpatialAttention(nn.Module):
         """
         return x * self.act(self.cv1(torch.cat([torch.mean(x, 1, keepdim=True), torch.max(x, 1, keepdim=True)[0]], 1)))
 
-
 class CBAM(nn.Module):
     """
     Convolutional Block Attention Module.
