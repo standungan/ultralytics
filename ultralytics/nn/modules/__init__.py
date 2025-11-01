@@ -16,6 +16,8 @@ Examples:
     >>> torch.onnx.export(m, x, f)
     >>> subprocess.run(f"onnxslim {f} {f} && open {f}", shell=True, check=True)  # pip install onnxslim
 """
+from .mshead import MultiScaleDetect
+
 
 from .block import (
     C1,
@@ -66,6 +68,7 @@ from .conv import (
     Concat,
     BiFPN_Concat2,
     BiFPN_Concat3,
+    ECA,
     Conv,
     Conv2,
     ConvTranspose,

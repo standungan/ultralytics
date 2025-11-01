@@ -26,6 +26,7 @@ __all__ = (
     "BiFPN_Concat2",
     "RepConv",
     "Index",
+    "ECA"
 )
 
 
@@ -750,3 +751,17 @@ class Index(nn.Module):
             (torch.Tensor): Selected tensor.
         """
         return x[self.index]
+
+class ECA(nn.Module):
+    """Efficient Channel Attention (no FC, 1D conv on channel descriptor)."""
+    def __init__(self, c: int, k_size: int = 3):
+        super().__init__()
+        self.avg = nn.AdaptiveAvgPool2d(1)
+        self.conv = nn.Conv1d(1, 1, k_size, padding=(k_size//2), bias=False)
+        self.act  = nn.Sigmoid()
+    def forward(self, x: Tensor) -> Tensor:
+        y = self.avg(x)             # [B,C,1,1]
+        y = self.conv(y.squeeze(-1).transpose(-1,-2))  # [B,1,C] -> conv -> [B,1,C]
+        y = self.act(y.transpose(-1,-2).unsqueeze(-1)) # [B,C,1,1]
+        return x * y
+    

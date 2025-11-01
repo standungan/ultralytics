@@ -9,6 +9,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
+from ultralytics.nn.modules.mshead import MultiScaleDetect
 from ultralytics.nn.modules.CBAM import myCBAM # import myCBAM module
 from ultralytics.nn.modules.conv import BiFPN_Concat2, BiFPN_Concat3, CBAM
 from ultralytics.nn.autobackend import check_class_names
@@ -19,6 +20,7 @@ from ultralytics.nn.modules import (
     C2PSA,
     C3,
     C3TR,
+    ECA,
     ELAN1,
     OBB,
     PSA,
